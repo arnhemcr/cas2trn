@@ -21,6 +21,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"math"
 	"slices"
 	"strconv"
 	"strings"
@@ -74,11 +75,13 @@ func parseAmount(fields []string, cfg config) (float64, error) {
 
 	if fields[cfg.creditI] == "" {
 		amt, err := parseFloat64(fields[cfg.debitI])
-		if err == nil && zero < amt {
-			const minus1 = -1.00
-
-			amt *= minus1
+		if err != nil {
+			return amt, err
 		}
+
+		const minus1 = -1.00
+
+		amt = math.Abs(amt) * minus1
 
 		return amt, nil
 	}
