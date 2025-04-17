@@ -187,14 +187,14 @@ func usage() {
 and it allows transactions from statements in different formats to be combined.
 If the names of statement files are not given, cas2trn reads transactions from standard input.
 
-The standard transaction format, written to standard output, contains the following fields:
+The standard transaction format, written as a CSV record to standard output, contains the following fields:
  * date in ISO 8601 format, which is sortable, e.g. "2006-01-02"
  * this account number or name
  * other account number or name, optional
  * memo or description
  * amount
 
-Parsing the arbitrary input transaction format is red by flags.
+Parsing the arbitrary input transaction format is configured by flags.
 Fields in the CSV records are linked to those in transactions by field indexes.
 An index of zero means these records do not contain that field.
 The flags are:
