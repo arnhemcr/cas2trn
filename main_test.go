@@ -45,8 +45,7 @@ func TestHappyTransactKBAmount(t *testing.T) {
 	}
 
 	// test credit transaction using amount field
-	flds := []string{"ZZ-YYYY-XXXXXXX-WW", "29-12-2023", 
-		"Automatic Payment Rates MISS E MACD ;Ref: Rates MISS E MACD",
+	flds := []string{"ZZ-YYYY-XXXXXXX-WW", "29-12-2023", "Automatic Payment Rates MISS E MACD ;Ref: Rates MISS E MACD",
 		"AP", "Rates", "E", "", "", "", "", "MISS E MACD", "AA-BBBB-CCCCCCC-DD", "162.00", "", "162.00", "1434.23"}
 
 	var trn transact
@@ -89,6 +88,33 @@ func TestHappyTransactKBAmount(t *testing.T) {
 
 	if got != expect {
 		t.Fatalf("wrong this account: expected==%v, got==%v\n", expect, got)
+	}
+}
+
+func TestHappyTransactMini(t *testing.T) {
+	t.Parallel()
+
+	cfg := mini
+
+	err := cfg.isValid()
+	if err != nil {
+		t.Fatalf("wrong error: expected==nil, got!=nil")
+	}
+
+	flds := []string{"2025-04-17", "A penny for your thoughts.", ".01"}
+
+	var trn transact
+
+	err = trn.transact(flds, cfg)
+	if err != nil {
+		t.Fatalf("wrong error: expected==nil, got!=nil")
+	}
+
+	expect := "2025-04-17,Mini,,A penny for your thoughts.,0.01"
+	got := trn.string()
+
+	if got != expect {
+		t.Fatalf("wrong String(): expected==%q, got==%q\n", expect, got)
 	}
 }
 
@@ -138,6 +164,19 @@ func TestHappyTransactPCUDebit(t *testing.T) {
 	expect := "2020-01-07,Assets:Current:PCUS1,,554PHP 18832946 Best of Health,-16.92"
 	got := trn.string()
 
+	if got != expect {
+		t.Fatalf("wrong String(): expected==%q, got==%q\n", expect, got)
+	}
+
+	// test debit transaction with a negative debit value!
+	flds = []string{"07/01/2020", "554PHP 18832946 Best of Health", "-16.92", "", "265.01"}
+
+	err = trn.transact(flds, cfg)
+	if err != nil {
+		t.Fatalf("wrong error: expected==nil, got!=nil")
+	}
+
+	got = trn.string()
 	if got != expect {
 		t.Fatalf("wrong String(): expected==%q, got==%q\n", expect, got)
 	}
@@ -344,6 +383,13 @@ var kbFull = config{ // for Kiwibank full CSV statement
 	amountI: 15, creditI: 13, dateI: 2, debitI: 14,
 	memoI: 3, otherAcctI: 12, thisAcctI: 1,
 	dateFormat: "02-01-2006", thisAcct: "",
+}
+
+var mini = config{ // for minimal CSV statement
+	nFields: 3,
+	amountI: 3, creditI: 0, dateI: 1, debitI: 0,
+	memoI: 2, otherAcctI: 0, thisAcctI: 0,
+	dateFormat: "2006-01-02", thisAcct: "Mini",
 }
 
 var pcu = config{ // for Police Credit Union account CSV statement
