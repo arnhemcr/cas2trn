@@ -68,14 +68,15 @@ var (
 	errIndexUnique  = errors.New("isValid: field indexes cannot share a non-zero value")
 	errIndexRange   = errors.New("isValid: field index is out of range")
 	errMemoI        = errors.New("isValid: memo field index cannot be zero")
-	errNFieldsRange = errors.New("isValid: number of fields is out of range")
+	errNFieldsRange = errors.New("isValid: number of fields in input CSV record is out of range")
 	errThisAcctOpt  = errors.New("isValid: this account and this account index " +
 		"cannot be empty string and zero respectively")
 )
 
 /*
 AreIndexesValid returns nil if all field indexes are valid.
-All indexes must be <= NFields, and all non-zero indexes must be unique.
+It assumes the number of fields in an input CSV record nFields is in range.
+All indexes must be <= nFields, and all non-zero indexes must be unique.
 If not, areIndexesValid returns the first error.
 */
 func (cfg *config) areIndexesValid() error {

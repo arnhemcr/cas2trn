@@ -88,7 +88,7 @@ func parseConfig() (config, error) {
 
 	var nFlds uint
 
-	flag.UintVar(&nFlds, "nfields", 0, "number of fields in a CSV record, mandatory")
+	flag.UintVar(&nFlds, "nfields", 0, "number of fields in input CSV record, mandatory")
 
 	var vals [nIndexes]uint
 
