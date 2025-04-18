@@ -44,7 +44,7 @@ const zero = 0.00
 
 var (
 	errAmount      = errors.New("amount cannot be zero")
-	errCreditDebit = errors.New("only one of credit or debit can be non-empty string")
+	errCreditDebit = errors.New("credit and debit cannot both be empty string or non-empty string")
 	errMemo        = errors.New("memo cannot be empty string")
 	errNFields     = errors.New("wrong number of fields")
 	errThisAcct    = errors.New("this account cannot be empty string")
@@ -58,32 +58,25 @@ The amount is parsed from:
  2. credit field if debit field is an empty string or
  3. debit field if credit field is an empty string
 
-If it fails to parse a value, parseAmount returns an error.
+If it fails to parse an amount, parseAmount returns an error.
 */
 func parseAmount(fields []string, cfg config) (float64, error) {
-	if cfg.amountI != 0 {
-		return parseFloat64(fields[cfg.amountI])
-	}
+	amt, crt, dbt := fields[cfg.amountI], fields[cfg.creditI], fields[cfg.debitI]
 
-	crt, dbt := fields[cfg.creditI], fields[cfg.debitI]
-	if (crt != "" && dbt != "") || (crt == "" && dbt == "") {
+	switch {
+	case amt != "":
+		return parseFloat64(amt)
+	case crt != "" && dbt == "":
+		return parseFloat64(crt)
+	case dbt != "" && crt == "":
+		val, err := parseFloat64(dbt)
+
+		const minus1 = -1.00
+
+		return math.Abs(val) * minus1, err
+	default:
 		return zero, errCreditDebit
 	}
-
-	if dbt == "" {
-		return parseFloat64(crt)
-	}
-
-	amt, err := parseFloat64(dbt)
-	if err != nil {
-		return amt, err
-	}
-
-	const minus1 = -1.00
-
-	amt = math.Abs(amt) * minus1
-
-	return amt, nil
 }
 
 /*

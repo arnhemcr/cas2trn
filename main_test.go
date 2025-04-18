@@ -297,23 +297,20 @@ func TestUnhappyConfigOptional(t *testing.T) {
 func TestUnhappyTransactAmount(t *testing.T) {
 	t.Parallel()
 
-	cfg := kbFull
-
-	// as amount field index is non-zero, amount field cannot be empty string
-	flds := []string{"ZZ-YYYY-XXXXXXX-WW", "29-12-2023", "Automatic Payment Rates MISS E MACD ;Ref: Rates MISS E MACD",
-		"AP", "Rates", "E", "", "", "", "", "MISS E MACD", "AA-BBBB-CCCCCCC-DD", "162.00", "", "", "1434.23"}
+	cfg := pcu
 
 	var trn transact
+
+	// either credit or debit must have a value not both
+	flds := []string{"07/01/2020", "554PHP 18832946 Best of Health", "16.92", "-16.92", "265.01"}
 
 	err := trn.transact(flds, cfg)
 	if err == nil {
 		t.Fatalf("wrong error: expected!=nil, got==nil")
 	}
 
-	cfg = pcu
-
-	// as amount field index is zero, credit and debit fields cannot both have values
-	flds = []string{"07/01/2020", "554PHP 18832946 Best of Health", "16.92", "-16.92", "265.01"}
+	// either credit or debit must have a value not neither
+	flds = []string{"07/01/2020", "554PHP 18832946 Best of Health", "", "", "265.01"}
 
 	err = trn.transact(flds, cfg)
 	if err == nil {
