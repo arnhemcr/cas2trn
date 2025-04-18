@@ -231,8 +231,16 @@ func TestUnhappyConfigMandatory(t *testing.T) {
 
 	cfg = kbFull
 
-	// date format cannot be empty string - is there a way to check it is a valid date format?
+	// date format cannot be empty string
 	cfg.dateFormat = ""
+
+	err = cfg.isValid()
+	if err == nil {
+		t.Fatalf("wrong error: expected!=nil, got==nil\n")
+	}
+
+	// date format must be a Go date format
+	cfg.dateFormat = "gibberish"
 
 	err = cfg.isValid()
 	if err == nil {

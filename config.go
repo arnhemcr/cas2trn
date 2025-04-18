@@ -20,6 +20,7 @@ package main
 
 import (
 	"errors"
+	"time"
 )
 
 const (
@@ -120,8 +121,8 @@ IsValid returns nil if this configuration is valid.
 If not, isValid returns the first error.
 */
 func (cfg *config) isValid() error {
-	if cfg.dateFormat == "" {
-		// The date format should be validated here, but how?
+	val, _ := time.Parse(cfg.dateFormat, cfg.dateFormat)
+	if val.Format(time.DateOnly) != time.DateOnly {
 		return errDateFormat
 	}
 

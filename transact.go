@@ -43,11 +43,11 @@ type transact struct {
 const zero = 0.00
 
 var (
-	errAmount   = errors.New("amount cannot be zero")
+	errAmount      = errors.New("amount cannot be zero")
 	errCreditDebit = errors.New("only one of credit or debit can be non-empty string")
-	errMemo     = errors.New("memo cannot be empty string")
-	errNFields  = errors.New("wrong number of fields")
-	errThisAcct = errors.New("this account cannot be empty string")
+	errMemo        = errors.New("memo cannot be empty string")
+	errNFields     = errors.New("wrong number of fields")
+	errThisAcct    = errors.New("this account cannot be empty string")
 )
 
 /*
@@ -88,7 +88,7 @@ func parseAmount(fields []string, cfg config) (float64, error) {
 
 /*
 ParseDate returns the date of this transaction and nil.
-It assumes the configuration and its date format are valid.
+It assumes the configuration is valid.
 If it fails to parse a date, parseDate returns an error.
 */
 func parseDate(fields []string, cfg config) (string, error) {
@@ -125,7 +125,7 @@ func (trn *transact) string() string {
 
 /*
 Transact parses the transaction from the fields, according to the configuration, and returns nil.
-It assumes the configuration and its date format are valid.
+It assumes the configuration is valid.
 If transact fails to parse a transaction, it returns the first error.
 */
 func (trn *transact) transact(fields []string, cfg config) error {
