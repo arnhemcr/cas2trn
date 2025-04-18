@@ -127,7 +127,7 @@ func (trn *transact) string() string {
 
 /*
 Transact parses the transaction from the fields, according to the configuration, and returns nil.
-It assumes the configuration is valid.
+It assumes the configuration and its date format are valid.
 If transact fails to parse a transaction, it returns the first error.
 */
 func (trn *transact) transact(fields []string, cfg config) error {

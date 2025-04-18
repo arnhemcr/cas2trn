@@ -50,7 +50,7 @@ type config struct {
 	thisAcctI  uint8 // optional, see thisAcct
 	/*
 		DateFormat is the format of the date field in an input CSV record.
-		It is mandatory and Go style e.g. "2006-01-02"
+		It is mandatory and Go style e.g. "02/01/2006"
 	*/
 	dateFormat string
 	/*
@@ -64,7 +64,7 @@ var (
 	errAmountOpt = errors.New(
 		"isValid: amount field index, or credit and debit indexes cannot both be zero")
 	errDateI        = errors.New("isValid: date field index cannot be zero")
-	errDateFormat   = errors.New("isValid: date format cannot be empty string")
+	errDateFormat   = errors.New("isValid: date format in input CSV record must be Go style e.g. \"02/01/2006\"")
 	errIndexUnique  = errors.New("isValid: field indexes cannot share a non-zero value")
 	errIndexRange   = errors.New("isValid: field index is out of range")
 	errMemoI        = errors.New("isValid: memo field index cannot be zero")
@@ -122,6 +122,7 @@ If not, isValid returns the first error.
 */
 func (cfg *config) isValid() error {
 	if cfg.dateFormat == "" {
+		// The date format should be validated here, but how?
 		return errDateFormat
 	}
 

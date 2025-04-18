@@ -328,6 +328,14 @@ func TestUnhappyTransactDate(t *testing.T) {
 	if err == nil {
 		t.Fatalf("wrong error: expected!=nil, got==nil")
 	}
+
+	// date format cannot be gibberish!
+	cfg.dateFormat = "gibberish"
+
+	err = trn.transact(flds, cfg)
+	if err == nil {
+		t.Fatalf("wrong error: expected!=nil, got==nil")
+	}
 }
 
 func TestUnhappyTransactMemo(t *testing.T) {
