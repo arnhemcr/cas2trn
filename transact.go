@@ -44,6 +44,7 @@ const zero = 0.00
 
 var (
 	errAmount   = errors.New("amount cannot be zero")
+	errCreditDebit = errors.New("only one of credit or debit can be non-empty string")
 	errMemo     = errors.New("memo cannot be empty string")
 	errNFields  = errors.New("wrong number of fields")
 	errThisAcct = errors.New("this account cannot be empty string")
@@ -65,6 +66,10 @@ func parseAmount(fields []string, cfg config) (float64, error) {
 	}
 
 	crt, dbt := fields[cfg.creditI], fields[cfg.debitI]
+	if (crt != "" && dbt != "") || (crt == "" && dbt == "") {
+		return zero, errCreditDebit
+	}
+
 	if dbt == "" {
 		return parseFloat64(crt)
 	}
