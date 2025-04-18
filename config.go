@@ -61,15 +61,14 @@ type config struct {
 }
 
 var (
-	errAmountOpt = errors.New(
-		"isValid: amount field index, or credit and debit indexes cannot both be zero")
-	errDateI        = errors.New("isValid: date field index cannot be zero")
-	errDateFormat   = errors.New("isValid: date format in input CSV record must be Go style e.g. \"02/01/2006\"")
-	errIndexUnique  = errors.New("isValid: field indexes cannot share a non-zero value")
-	errIndexRange   = errors.New("isValid: field index is out of range")
-	errMemoI        = errors.New("isValid: memo field index cannot be zero")
-	errNFieldsRange = errors.New("isValid: number of fields in input CSV record is out of range")
-	errThisAcctOpt  = errors.New("isValid: this account and this account index " +
+	errAmountOpt    = errors.New("amount field index, or credit and debit indexes cannot both be zero")
+	errDateI        = errors.New("date field index cannot be zero")
+	errDateFormat   = errors.New("date format in input CSV record must be Go style e.g. \"02/01/2006\"")
+	errIndexUnique  = errors.New("field indexes cannot share a non-zero value")
+	errIndexRange   = errors.New("field index is out of range")
+	errMemoI        = errors.New("memo field index cannot be zero")
+	errNFieldsRange = errors.New("number of fields in input CSV record is out of range")
+	errThisAcctOpt  = errors.New("this account and this account index " +
 		"cannot be empty string and zero respectively")
 )
 

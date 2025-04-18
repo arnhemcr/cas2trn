@@ -43,12 +43,11 @@ type transact struct {
 const zero = 0.00
 
 var (
-	errAmount       = errors.New("transact: amount cannot be zero")
-	errCreditDebit  = errors.New("transact: credit and debit cannot both be empty string")
-	errCreditDebitI = errors.New("transact: credit and debit field indexes cannot be zero")
-	errMemo         = errors.New("transact: memo cannot be empty string")
-	errNFields      = errors.New("transact: wrong number of fields")
-	errThisAcct     = errors.New("transact: this account cannot be empty string")
+	errAmount       = errors.New("amount cannot be zero")
+	errCreditDebitI = errors.New("credit and debit field indexes cannot be zero")
+	errMemo         = errors.New("memo cannot be empty string")
+	errNFields      = errors.New("wrong number of fields")
+	errThisAcct     = errors.New("this account cannot be empty string")
 )
 
 /*
@@ -58,7 +57,7 @@ The amount is parsed from:
  2. credit field if debit field is an empty string or
  3. debit field if credit field is an empty string
 
-If it fails to parse a value, parseAmount returns zero and an error.
+If it fails to parse a value, parseAmount returns an error.
 */
 func parseAmount(fields []string, cfg config) (float64, error) {
 	if cfg.amountI != 0 {
@@ -69,34 +68,31 @@ func parseAmount(fields []string, cfg config) (float64, error) {
 		return zero, errCreditDebitI
 	}
 
-	if fields[cfg.debitI] == "" {
-		return parseFloat64(fields[cfg.creditI])
+	crt, dbt := fields[cfg.creditI], fields[cfg.debitI]
+	if dbt == "" {
+		return parseFloat64(crt)
 	}
 
-	if fields[cfg.creditI] == "" {
-		amt, err := parseFloat64(fields[cfg.debitI])
-		if err != nil {
-			return amt, err
-		}
-
-		const minus1 = -1.00
-
-		amt = math.Abs(amt) * minus1
-
-		return amt, nil
+	amt, err := parseFloat64(dbt)
+	if err != nil {
+		return amt, err
 	}
 
-	return zero, errCreditDebit
+	const minus1 = -1.00
+
+	amt = math.Abs(amt) * minus1
+
+	return amt, nil
 }
 
 /*
 ParseDate returns the date, parsed from the string according to the format, and nil.
-If it fails to parse a date, parseDate returns empty string and an error.
+If it fails to parse a date, parseDate returns an error.
 */
 func parseDate(date, dateFormat string) (string, error) {
 	val, err := time.Parse(dateFormat, date)
 	if err != nil {
-		return "", fmt.Errorf("transact: %w", err)
+		return "", fmt.Errorf("parseDate: %w", err)
 	}
 
 	return val.Format(time.DateOnly), nil
@@ -104,12 +100,12 @@ func parseDate(date, dateFormat string) (string, error) {
 
 /*
 ParseFloat64 returns the float64 value parsed from the string and nil.
-If it fails to parse a value, parseFloat64 returns zero and an error.
+If it fails to parse a value, parseFloat64 returns an error.
 */
 func parseFloat64(float string) (float64, error) {
 	val, err := strconv.ParseFloat(float, 64)
 	if err != nil {
-		return zero, fmt.Errorf("transact: %w", err)
+		return zero, fmt.Errorf("parseFloat64: %w", err)
 	}
 
 	return val, nil

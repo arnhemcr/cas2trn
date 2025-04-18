@@ -119,7 +119,7 @@ func parseConfig() (config, error) {
 
 	err := cfg.isValid()
 	if err != nil {
-		return cfg, fmt.Errorf("cfg.isValid: %w", err)
+		return cfg, fmt.Errorf("config.isValid: %w", err)
 	}
 
 	return cfg, nil
@@ -153,7 +153,7 @@ func translateStatement(reader *csv.Reader, cfg config) error {
 		if err != nil {
 			lineN, _ := reader.FieldPos(0)
 			fmt.Fprintln(os.Stderr,
-				fmt.Errorf("%v: %w on line %v", pgmName, err, lineN))
+				fmt.Errorf("%v: transact.transact: %w on line %v", pgmName, err, lineN))
 
 			continue
 		}
@@ -202,13 +202,13 @@ The flags are:
 	flag.PrintDefaults()
 	fmt.Fprintf(os.Stderr, `
 For example, consider input transaction "24/12/2019,Brumby's,6.50,,330.04". 
-It does not contain this account. 
-It has debit and credit fields, instead of an amount, which are followed by a balance.
-The flags to translate this transaction would be
-"-thisacct=PCUS1 -nfields=5 -datei=1 -dateformat=02/01/2006 -memoi=2 -debiti=3 -crediti=4",
-which would output "2019-12-24,PCUS1,,Brumby's,-6.5".
+It contains debit and credit fields, instead of an amount, followed by a balance.
+It does not contain a this account field.
+To translate transactions in this input format, the configuration flags would be
+"-nfields=5 -datei=1 -dateformat=02/01/2006 -memoi=2 -debiti=3 -crediti=4 -thisacct=PCUS1".
+The output transaction, in standard format, would be "2019-12-24,PCUS1,,Brumby's,-6.5".
 
 If cas2trn fails to parse a CSV record as a transaction, it prints an error on standard error then continues.
-Errors about failing to parse header lines can be ignored.
+Errors about unparseable header lines can be ignored.
 `)
 }
