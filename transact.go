@@ -43,15 +43,15 @@ type transact struct {
 const zero = 0.00
 
 var (
-	errAmount       = errors.New("amount cannot be zero")
-	errCreditDebitI = errors.New("credit and debit field indexes cannot be zero")
-	errMemo         = errors.New("memo cannot be empty string")
-	errNFields      = errors.New("wrong number of fields")
-	errThisAcct     = errors.New("this account cannot be empty string")
+	errAmount   = errors.New("amount cannot be zero")
+	errMemo     = errors.New("memo cannot be empty string")
+	errNFields  = errors.New("wrong number of fields")
+	errThisAcct = errors.New("this account cannot be empty string")
 )
 
 /*
 ParseAmount returns the amount of this transaction and nil.
+It assumes the configuration is valid.
 The amount is parsed from:
  1. amount field or
  2. credit field if debit field is an empty string or
@@ -62,10 +62,6 @@ If it fails to parse a value, parseAmount returns an error.
 func parseAmount(fields []string, cfg config) (float64, error) {
 	if cfg.amountI != 0 {
 		return parseFloat64(fields[cfg.amountI])
-	}
-
-	if cfg.creditI == 0 || cfg.debitI == 0 {
-		return zero, errCreditDebitI
 	}
 
 	crt, dbt := fields[cfg.creditI], fields[cfg.debitI]
@@ -86,11 +82,12 @@ func parseAmount(fields []string, cfg config) (float64, error) {
 }
 
 /*
-ParseDate returns the date, parsed from the string according to the format, and nil.
+ParseDate returns the date of this transaction and nil.
+It assumes the configuration and its date format are valid.
 If it fails to parse a date, parseDate returns an error.
 */
-func parseDate(date, dateFormat string) (string, error) {
-	val, err := time.Parse(dateFormat, date)
+func parseDate(fields []string, cfg config) (string, error) {
+	val, err := time.Parse(cfg.dateFormat, fields[cfg.dateI])
 	if err != nil {
 		return "", fmt.Errorf("parseDate: %w", err)
 	}
@@ -140,7 +137,7 @@ func (trn *transact) transact(fields []string, cfg config) error {
 
 	var err error
 
-	trn.date, err = parseDate(flds[cfg.dateI], cfg.dateFormat)
+	trn.date, err = parseDate(flds, cfg)
 	if err != nil {
 		return err
 	}
