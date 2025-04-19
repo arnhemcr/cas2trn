@@ -138,7 +138,7 @@ func TestHappyTransactPCUCredit(t *testing.T) {
 		t.Fatalf("wrong error: expected==nil, got!=nil")
 	}
 
-	expect := "2019-11-28,Assets:Current:PCUS1,,HealthAndLif eInsuranceAn dSubs ARNHEMCR BP,123,"
+	expect := "2019-11-28,Assets:Current:PCUS1,,HealthAndLif eInsuranceAn dSubs ARNHEMCR BP,123,NZD"
 	got := trn.string()
 
 	if got != expect {
@@ -161,7 +161,7 @@ func TestHappyTransactPCUDebit(t *testing.T) {
 		t.Fatalf("wrong error: expected==nil, got!=nil")
 	}
 
-	expect := "2020-01-07,Assets:Current:PCUS1,,554PHP 18832946 Best of Health,-16.92,"
+	expect := "2020-01-07,Assets:Current:PCUS1,,554PHP 18832946 Best of Health,-16.92,NZD"
 	got := trn.string()
 
 	if got != expect {
@@ -395,6 +395,7 @@ var kbFull = config{ // for Kiwibank full CSV statement
 	nFields: 16,
 	amountI: 15, creditI: 13, dateI: 2, debitI: 14,
 	memoI: 3, otherAcctI: 12, thisAcctI: 1,
+	currency:   "",
 	dateFormat: "02-01-2006", thisAcct: "",
 }
 
@@ -402,12 +403,14 @@ var mini = config{ // for minimal CSV statement
 	nFields: 3,
 	amountI: 3, creditI: 0, dateI: 1, debitI: 0,
 	memoI: 2, otherAcctI: 0, thisAcctI: 0,
+	currency:   "",
 	dateFormat: "2006-01-02", thisAcct: "Mini",
 }
 
-var pcu = config{ // for Police Credit Union account CSV statement
+var pcu = config{ // for PCU account CSV statement
 	nFields: 5,
 	amountI: 0, creditI: 4, dateI: 1, debitI: 3,
 	memoI: 2, otherAcctI: 0, thisAcctI: 0,
+	currency:   "NZD",
 	dateFormat: "02/01/2006", thisAcct: "Assets:Current:PCUS1",
 }
