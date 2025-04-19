@@ -50,6 +50,11 @@ type config struct {
 	otherAcctI uint8 // optional
 	thisAcctI  uint8 // optional, see thisAcct
 	/*
+		Currency is the unit for amount.
+		It is optional e.g. "NZD".
+	*/
+	currency string
+	/*
 		DateFormat is the format of the date field in an input CSV record.
 		It is mandatory and Go style e.g. "02/01/2006"
 	*/

@@ -101,6 +101,7 @@ func parseConfig() (config, error) {
 	flag.UintVar(&vals[5], "otheraccti", 0, "other account number or name field index, optional")
 	flag.UintVar(&vals[6], "thisaccti", 0, "this account number or name field index, optional see thisacct")
 
+	flag.StringVar(&cfg.currency, "currency", "", "unit for amounts on this statement, optional e.g. \"NZD\"")
 	flag.StringVar(&cfg.dateFormat, "dateformat", "", "date format, mandatory and Go style e.g. \"02/01/2006\"")
 	flag.StringVar(&cfg.thisAcct, "thisacct", "", "this account number or name, "+
 		"optional but if empty string then thisaccti must be non-zero")
@@ -190,9 +191,10 @@ If the names of statement files are not given, cas2trn reads transactions from s
 The standard transaction format, written as a CSV record to standard output, contains the following fields:
  * date in ISO 8601 format, which is sortable, e.g. "2006-01-02"
  * this account number or name
- * other account number or name, optional
+ * other account number or name, optional and can be empty string
  * memo or description
  * amount
+ * currency, optional
 
 Parsing the arbitrary input transaction format is configured by flags.
 Fields in the CSV records are linked to those in transactions by field indexes.
@@ -206,7 +208,7 @@ It contains debit and credit fields, instead of an amount, followed by a balance
 It does not contain a this account field.
 To translate transactions in this input format, the configuration flags would be
 "-nfields=5 -datei=1 -dateformat=02/01/2006 -memoi=2 -debiti=3 -crediti=4 -thisacct=PCUS1".
-The output transaction, in standard format, would be "2019-12-24,PCUS1,,Brumby's,-6.5".
+The output transaction, in standard format, would be "2019-12-24,PCUS1,,Brumby's,-6.5,".
 
 If cas2trn fails to parse a CSV record as a transaction, it prints an error on standard error then continues.
 Errors about unparseable header lines can be ignored.

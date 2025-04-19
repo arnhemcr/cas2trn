@@ -110,7 +110,7 @@ func TestHappyTransactMini(t *testing.T) {
 		t.Fatalf("wrong error: expected==nil, got!=nil")
 	}
 
-	expect := "2025-04-17,Mini,,A penny for your thoughts.,0.01"
+	expect := "2025-04-17,Mini,,A penny for your thoughts.,0.01,"
 	got := trn.string()
 
 	if got != expect {
@@ -138,7 +138,7 @@ func TestHappyTransactPCUCredit(t *testing.T) {
 		t.Fatalf("wrong error: expected==nil, got!=nil")
 	}
 
-	expect := "2019-11-28,Assets:Current:PCUS1,,HealthAndLif eInsuranceAn dSubs ARNHEMCR BP,123"
+	expect := "2019-11-28,Assets:Current:PCUS1,,HealthAndLif eInsuranceAn dSubs ARNHEMCR BP,123,"
 	got := trn.string()
 
 	if got != expect {
@@ -161,7 +161,7 @@ func TestHappyTransactPCUDebit(t *testing.T) {
 		t.Fatalf("wrong error: expected==nil, got!=nil")
 	}
 
-	expect := "2020-01-07,Assets:Current:PCUS1,,554PHP 18832946 Best of Health,-16.92"
+	expect := "2020-01-07,Assets:Current:PCUS1,,554PHP 18832946 Best of Health,-16.92,"
 	got := trn.string()
 
 	if got != expect {

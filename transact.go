@@ -30,10 +30,11 @@ import (
 
 /*
 A transact represents a financial transaction in CSV format.
-All but one of the fields in a transaction are mandatory, and must be non-zero.
+Most of the fields are mandatory so must be non-zero or not empty string.
 */
 type transact struct {
 	amount    float64
+	currency  string // optional, can be empty string
 	date      string
 	memo      string
 	otherAcct string // optional, can be empty string
@@ -52,13 +53,9 @@ var (
 
 /*
 ParseAmount returns the amount of this transaction and nil.
-It assumes the configuration is valid.
-The amount is parsed from:
- 1. amount field or
- 2. credit field if debit field is an empty string or
- 3. debit field if credit field is an empty string
-
-If it fails to parse an amount, parseAmount returns an error.
+It looks for an amount in the amount, credit or debit fields.
+ParseAmount assumes the configuration is valid.
+If it fails to find or parse an amount, parseAmount returns an error.
 */
 func parseAmount(fields []string, cfg config) (float64, error) {
 	amt, crt, dbt := fields[cfg.amountI], fields[cfg.creditI], fields[cfg.debitI]
@@ -109,7 +106,7 @@ func parseFloat64(float string) (float64, error) {
 // String returns the transaction in the standard CSV format.
 func (trn *transact) string() string {
 	amt := strconv.FormatFloat(trn.amount, 'f', -1, 64)
-	flds := []string{trn.date, trn.thisAcct, trn.otherAcct, trn.memo, amt}
+	flds := []string{trn.date, trn.thisAcct, trn.otherAcct, trn.memo, amt, trn.currency}
 
 	const sep = ","
 
@@ -152,6 +149,7 @@ func (trn *transact) transact(fields []string, cfg config) error {
 		return errMemo
 	}
 
+	trn.currency = cfg.currency
 	trn.otherAcct = flds[cfg.otherAcctI]
 
 	switch {
